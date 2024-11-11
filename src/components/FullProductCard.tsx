@@ -9,7 +9,7 @@ import {
   CardContent,
   Divider,
 } from "@mui/material";
-
+import { useState, useEffect } from "react";
 interface ProductProps {
   title: string;
   category: string;
@@ -23,7 +23,7 @@ interface ProductProps {
 }
 
 export default function FullProductCard() {
-  let product: ProductProps = {
+  const [product, setProduct] = useState<ProductProps>({
     title: "placeholder",
     category: "placeholder",
     brand: "placeholder",
@@ -33,10 +33,24 @@ export default function FullProductCard() {
     images: ["placeholder"],
     description: "placeholder",
     stock: 0,
-  };
-  if (typeof window !== "undefined") {
-    product = JSON.parse(localStorage.getItem("chosenProduct")!);
-  }
+  });
+  //   let product: ProductProps = {
+  //     title: "placeholder",
+  //     category: "placeholder",
+  //     brand: "placeholder",
+  //     price: 0,
+  //     discountPercentage: 0,
+  //     rating: 0,
+  //     images: ["placeholder"],
+  //     description: "placeholder",
+  //     stock: 0,
+  //   };
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setProduct(JSON.parse(localStorage.getItem("chosenProduct")!));
+    }
+  }, []);
+
   const priceWithDiscount = (
     product.price -
     product.price * (product.discountPercentage / 100)

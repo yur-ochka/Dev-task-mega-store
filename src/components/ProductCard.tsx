@@ -22,7 +22,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   ).toFixed(2);
 
   function handleProductChoose() {
-    localStorage.setItem("chosenProduct", JSON.stringify(product));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("chosenProduct", JSON.stringify(product));
+    }
   }
 
   return (

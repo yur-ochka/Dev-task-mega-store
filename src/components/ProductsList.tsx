@@ -2,7 +2,7 @@
 import ProductCard from "./ProductCard";
 import PaginationBar from "./PaginationBar";
 import { Grid, Box } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ProductProps {
   title: string;
@@ -21,7 +21,14 @@ interface ProductsProps {
 }
 
 export default function ProductsList({ products }: ProductsProps) {
-  const savedPage = localStorage.getItem("currentPage");
+  const [savedPage, setSavedPage] = useState("1");
+  //let savedPage: string = "1";
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setSavedPage(localStorage.getItem("currentPage")!);
+    }
+  }, []);
+
   const basicIDs = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   const startIDs: number[] = [];
   const [currentPage, setCurrentPage] = useState(
@@ -37,8 +44,9 @@ export default function ProductsList({ products }: ProductsProps) {
     const newDisplayedIDs: number[] = [];
     basicIDs.map((id) => newDisplayedIDs.push(id + 10 * (newPage - 1)));
     setDisplayedIDs(newDisplayedIDs);
-
-    localStorage.setItem("currentPage", String(newPage));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("currentPage", String(newPage));
+    }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
