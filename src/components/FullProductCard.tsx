@@ -23,9 +23,10 @@ interface ProductProps {
 }
 
 export default function FullProductCard() {
-  const product: ProductProps = JSON.parse(
-    localStorage.getItem("chosenProduct")!
-  );
+  let product!: ProductProps;
+  if (typeof window !== "undefined") {
+    product = JSON.parse(localStorage.getItem("chosenProduct")!);
+  }
   const priceWithDiscount = (
     product.price -
     product.price * (product.discountPercentage / 100)
