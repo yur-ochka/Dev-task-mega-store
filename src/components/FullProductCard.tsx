@@ -23,7 +23,17 @@ interface ProductProps {
 }
 
 export default function FullProductCard() {
-  let product!: ProductProps;
+  let product: ProductProps = {
+    title: "placeholder",
+    category: "placeholder",
+    brand: "placeholder",
+    price: 0,
+    discountPercentage: 0,
+    rating: 0,
+    images: ["placeholder"],
+    description: "placeholder",
+    stock: 0,
+  };
   if (typeof window !== "undefined") {
     product = JSON.parse(localStorage.getItem("chosenProduct")!);
   }
