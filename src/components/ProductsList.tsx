@@ -21,28 +21,26 @@ interface ProductsProps {
 }
 
 export default function ProductsList({ products }: ProductsProps) {
-  const [savedPage] = useState(() => {
-    const storedPage = localStorage.getItem("currentPage");
-    return storedPage ? storedPage : "1";
-  });
-
-  const basicIDs = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const [currentPage, setCurrentPage] = useState(Number(savedPage));
-
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [displayedIDs, setDisplayedIDs] = useState<number[]>([]);
+  const basicIDs = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const totalPages = Math.ceil(products.limit / 10);
+
+  useEffect(() => {
+    const savedPage = localStorage.getItem("currentPage");
+    if (savedPage) {
+      setCurrentPage(Number(savedPage));
+    }
+  }, []);
 
   useEffect(() => {
     const newDisplayedIDs = basicIDs.map((id) => id + 10 * (currentPage - 1));
     setDisplayedIDs(newDisplayedIDs);
   }, [currentPage]);
 
-  const totalPages = Math.ceil(products.limit / 10);
-
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("currentPage", String(newPage));
-    }
+    localStorage.setItem("currentPage", String(newPage));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
