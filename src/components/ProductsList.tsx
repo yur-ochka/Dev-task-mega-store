@@ -21,33 +21,28 @@ interface ProductsProps {
 }
 
 export default function ProductsList({ products }: ProductsProps) {
-  const [savedPage, setSavedPage] = useState("1");
-  //let savedPage: string = "1";
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setSavedPage(localStorage.getItem("currentPage")!);
-    }
-  }, []);
+  const [savedPage] = useState(() => {
+    const storedPage = localStorage.getItem("currentPage");
+    return storedPage ? storedPage : "1";
+  });
 
   const basicIDs = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const startIDs: number[] = [];
-  const [currentPage, setCurrentPage] = useState(
-    savedPage ? Number(savedPage) : 1
-  );
-  basicIDs.map((id) => startIDs.push(id + 10 * (currentPage - 1)));
-  const [displayedIDs, setDisplayedIDs] = useState(startIDs);
+  const [currentPage, setCurrentPage] = useState(Number(savedPage));
 
-  const totalPages = products.limit / 10;
+  const [displayedIDs, setDisplayedIDs] = useState<number[]>([]);
+
+  useEffect(() => {
+    const newDisplayedIDs = basicIDs.map((id) => id + 10 * (currentPage - 1));
+    setDisplayedIDs(newDisplayedIDs);
+  }, [currentPage]);
+
+  const totalPages = Math.ceil(products.limit / 10);
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
-    const newDisplayedIDs: number[] = [];
-    basicIDs.map((id) => newDisplayedIDs.push(id + 10 * (newPage - 1)));
-    setDisplayedIDs(newDisplayedIDs);
     if (typeof window !== "undefined") {
       localStorage.setItem("currentPage", String(newPage));
     }
-
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -81,7 +76,7 @@ export default function ProductsList({ products }: ProductsProps) {
       <PaginationBar
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={handlePageChange} // Передаем функцию смены страницы
+        onPageChange={handlePageChange}
       />
     </Box>
   );
