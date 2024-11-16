@@ -1,5 +1,9 @@
-export async function GET() {
-  const response = await fetch("https://dummyjson.com/products/");
-  if (!response.ok) throw new Error("Не удалось получить продукт");
-  return response.json();
-}
+import axiosInstance from "@/utils/axiosInstance";
+
+export const getProducts = async () => {
+  const response = await axiosInstance.get("/products");
+  if (response.status !== 200) {
+    throw new Error("Couldnt get products");
+  }
+  return response.data;
+};
