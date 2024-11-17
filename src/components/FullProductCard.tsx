@@ -34,17 +34,7 @@ export default function FullProductCard() {
     description: "placeholder",
     stock: 0,
   });
-  //   let product: ProductProps = {
-  //     title: "placeholder",
-  //     category: "placeholder",
-  //     brand: "placeholder",
-  //     price: 0,
-  //     discountPercentage: 0,
-  //     rating: 0,
-  //     images: ["placeholder"],
-  //     description: "placeholder",
-  //     stock: 0,
-  //   };
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setProduct(JSON.parse(localStorage.getItem("chosenProduct")!));

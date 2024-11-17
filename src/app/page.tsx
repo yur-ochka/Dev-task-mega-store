@@ -1,7 +1,5 @@
-import ProductsList from "@/components/ProductsList";
-import Header from "@/components/header";
 import { GET } from "./api/route";
-
+import MainComponent from "@/components/MainComponent";
 export default async function Home() {
   const res = await GET();
 
@@ -11,10 +9,5 @@ export default async function Home() {
 
   const productsData = await res.json();
 
-  return (
-    <>
-      <Header />
-      <ProductsList products={productsData} />
-    </>
-  );
+  return <MainComponent products={productsData}></MainComponent>;
 }

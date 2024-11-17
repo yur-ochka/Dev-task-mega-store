@@ -24,6 +24,7 @@ const PaginationBar: FC<PaginationProps> = ({
       color="primary"
       shape="rounded"
       variant="outlined"
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
     />
   );
 };

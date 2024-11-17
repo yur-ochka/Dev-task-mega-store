@@ -9,7 +9,20 @@ import {
 } from "@mui/material";
 import { Home, Search } from "@mui/icons-material";
 import Image from "next/image";
-export default function Header() {
+
+export default function Header({
+  handleSearch,
+}: {
+  handleSearch: (search: string) => void;
+}) {
+  // Function to handle search when the input is submitted
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault(); // Prevent page reload on form submission
+    const searchValue = (event.target as HTMLFormElement).search.value; // Get the value from the input
+    handleSearch(searchValue); // Call the handleSearch function with the input value
+    console.log(searchValue);
+  };
+
   return (
     <Box sx={{ marginBottom: 4 }}>
       <AppBar
@@ -29,9 +42,8 @@ export default function Header() {
             aria-label="open drawer"
             sx={{ mr: 2 }}
           >
-            <Home></Home>
+            <Home />
           </IconButton>
-          {/* <img src="../app/img/logo.png" alt="Ptichka"></img> */}
           <Image src="/img/logo.png" alt="Ptichka" width={50} height={50} />
           <Typography
             variant="h6"
@@ -43,7 +55,7 @@ export default function Header() {
           </Typography>
           <Box
             sx={{
-              backgroundColor: "	#636363",
+              backgroundColor: "#636363",
               display: "flex",
               flexDirection: "row",
               minHeight: 40,
@@ -54,12 +66,16 @@ export default function Header() {
             }}
           >
             <Icon sx={{ paddingLeft: 3, paddingRight: 2 }}>
-              <Search></Search>
+              <Search />
             </Icon>
-            <InputBase
-              placeholder="Search..."
-              sx={{ color: "white", minWidth: 400 }}
-            ></InputBase>
+            {/* Wrapping the input in a form to handle submit */}
+            <form onSubmit={handleSubmit}>
+              <InputBase
+                placeholder="Search..."
+                sx={{ color: "white", minWidth: 400 }}
+                name="search" // Make sure to use a name attribute for the input field
+              />
+            </form>
           </Box>
         </Toolbar>
       </AppBar>

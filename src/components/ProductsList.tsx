@@ -1,11 +1,11 @@
 "use client";
 import ProductCard from "./ProductCard";
 import PaginationBar from "./PaginationBar";
-import { Grid, Box } from "@mui/material";
-//import { useState, useEffect } from "react";
+import { Grid, Box, Typography } from "@mui/material";
 import { usePagination } from "./usePagination";
 
 interface ProductProps {
+  id: number;
   title: string;
   category: string;
   brand: string;
@@ -19,17 +19,46 @@ interface ProductProps {
 
 interface ProductsProps {
   products: { products: ProductProps[]; limit: number };
+  searchInput: string;
 }
 
-export default function ProductsList({ products }: ProductsProps) {
+export default function ProductsList({ products, searchInput }: ProductsProps) {
   const { currentPage, displayedIDs, totalPages, handlePageChange } =
     usePagination(products.limit);
-
+  const matchingProducts: ProductProps[] = [];
+  const IDsOfMatchingProducts: number[] = [];
+  let totalPagesOfMatchingProducts: number = 0;
+  let displayedIDsOfMatchingProducts: number[] = [];
+  if (searchInput) {
+    const searchLower = searchInput.toLowerCase();
+    for (const product of products.products) {
+      if (
+        product.title.toLowerCase().includes(searchLower) ||
+        product.category.toLowerCase().includes(searchLower) ||
+        product.images.some((image) =>
+          image.toLowerCase().includes(searchLower)
+        ) ||
+        product.price.toString().includes(searchLower) ||
+        product.discountPercentage.toString().includes(searchLower) ||
+        product.rating.toString().includes(searchLower) ||
+        product.stock.toString().includes(searchLower)
+      ) {
+        matchingProducts.push(product);
+      }
+    }
+    matchingProducts.map((product) =>
+      IDsOfMatchingProducts.push(product.id - 1)
+    );
+    totalPagesOfMatchingProducts = Math.ceil(IDsOfMatchingProducts.length / 10);
+    displayedIDsOfMatchingProducts = IDsOfMatchingProducts.slice(
+      10 * (currentPage - 1),
+      10 * currentPage
+    );
+  }
   return (
     <Box
       sx={{
         justifyContent: "center",
-        alignItems: "center",
         display: "flex",
         flexDirection: "column",
       }}
@@ -43,18 +72,38 @@ export default function ProductsList({ products }: ProductsProps) {
         }}
       >
         <Grid container spacing={2} sx={{ maxWidth: 690 }}>
-          {displayedIDs.map((id) =>
-            products.products[id] ? (
-              <Grid item xs={6} key={id}>
-                <ProductCard product={products.products[id]} />
-              </Grid>
-            ) : null
+          {searchInput ? (
+            displayedIDsOfMatchingProducts.length > 0 ? (
+              displayedIDsOfMatchingProducts.map((id) =>
+                products.products[id] ? (
+                  <Grid item xs={6} key={id}>
+                    <ProductCard product={products.products[id]} />
+                  </Grid>
+                ) : null
+              )
+            ) : (
+              <Typography>Nothing found</Typography>
+            )
+          ) : (
+            displayedIDs.map((id) =>
+              products.products[id] ? (
+                <Grid item xs={6} key={id}>
+                  <ProductCard product={products.products[id]} />
+                </Grid>
+              ) : null
+            )
           )}
         </Grid>
       </Box>
       <PaginationBar
         currentPage={currentPage}
-        totalPages={totalPages}
+        totalPages={
+          searchInput
+            ? totalPagesOfMatchingProducts > 0
+              ? totalPagesOfMatchingProducts
+              : 0
+            : totalPages
+        }
         onPageChange={handlePageChange}
       />
     </Box>
