@@ -1,6 +1,6 @@
 import ProductsList from "@/components/ProductsList";
 import Header from "@/components/header";
-import GET from "./api/route";
+import { GET } from "./api/route";
 
 export default async function Home() {
   const res = await GET();

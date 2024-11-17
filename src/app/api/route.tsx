@@ -1,7 +1,7 @@
 import axiosInstance from "@/utils/axiosInstance";
 import { NextResponse } from "next/server";
 
-export default async function GET() {
+export async function GET() {
   try {
     const response = await axiosInstance.get("/products");
 
