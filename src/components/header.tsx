@@ -8,6 +8,7 @@ import {
   Icon,
 } from "@mui/material";
 import { Home, Search } from "@mui/icons-material";
+import Image from "next/image";
 export default function Header() {
   return (
     <Box sx={{ marginBottom: 4 }}>
@@ -30,13 +31,15 @@ export default function Header() {
           >
             <Home></Home>
           </IconButton>
+          {/* <img src="../app/img/logo.png" alt="Ptichka"></img> */}
+          <Image src="/img/logo.png" alt="Ptichka" width={50} height={50} />
           <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
+            sx={{ display: { xs: "none", sm: "block" }, marginLeft: 1 }}
           >
-            Магазин &quot;Птички-яички&quot;
+            Shop &quot;Bird &apos;n balls&quot;
           </Typography>
           <Box
             sx={{
