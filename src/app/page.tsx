@@ -1,12 +1,20 @@
-import GET from "./api/route";
-import ProductsList from "../components/ProductsList";
+import ProductsList from "@/components/ProductsList";
 import Header from "@/components/header";
+import GET from "./api/route";
+
 export default async function Home() {
-  const products = await GET();
+  const res = await GET();
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
+
+  const productsData = await res.json();
+
   return (
     <>
-      <Header></Header>
-      <ProductsList products={products}></ProductsList>
+      <Header />
+      <ProductsList products={productsData} />
     </>
   );
 }
