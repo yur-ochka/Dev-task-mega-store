@@ -18,20 +18,25 @@ interface ProductProps {
 }
 
 interface ProductsProps {
-  products: { products: ProductProps[]; limit: number };
+  products: ProductProps[];
+  limit: number;
   searchInput: string;
 }
 
-export default function ProductsList({ products, searchInput }: ProductsProps) {
+export default function ProductsList({
+  products,
+  limit,
+  searchInput,
+}: ProductsProps) {
   const { currentPage, displayedIDs, totalPages, handlePageChange } =
-    usePagination(products.limit);
+    usePagination(limit);
   const matchingProducts: ProductProps[] = [];
   const IDsOfMatchingProducts: number[] = [];
   let totalPagesOfMatchingProducts: number = 0;
   let displayedIDsOfMatchingProducts: number[] = [];
   if (searchInput) {
     const searchLower = searchInput.toLowerCase();
-    for (const product of products.products) {
+    for (const product of products) {
       if (
         product.title.toLowerCase().includes(searchLower) ||
         product.category.toLowerCase().includes(searchLower) ||
@@ -75,9 +80,9 @@ export default function ProductsList({ products, searchInput }: ProductsProps) {
           {searchInput ? (
             displayedIDsOfMatchingProducts.length > 0 ? (
               displayedIDsOfMatchingProducts.map((id) =>
-                products.products[id] ? (
+                products[id] ? (
                   <Grid item xs={6} key={id}>
-                    <ProductCard product={products.products[id]} />
+                    <ProductCard product={products[id]} />
                   </Grid>
                 ) : null
               )
@@ -86,9 +91,9 @@ export default function ProductsList({ products, searchInput }: ProductsProps) {
             )
           ) : (
             displayedIDs.map((id) =>
-              products.products[id] ? (
+              products[id] ? (
                 <Grid item xs={6} key={id}>
-                  <ProductCard product={products.products[id]} />
+                  <ProductCard product={products[id]} />
                 </Grid>
               ) : null
             )

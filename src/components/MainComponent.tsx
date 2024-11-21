@@ -1,7 +1,10 @@
 "use client";
 import ProductsList from "@/components/ProductsList";
 import Header from "@/components/header";
-import { useState } from "react";
+import axiosInstance from "@/utils/axiosInstance";
+import { useQuery } from "@tanstack/react-query";
+import { useState, FC } from "react";
+
 interface ProductProps {
   id: number;
   title: string;
@@ -16,19 +19,38 @@ interface ProductProps {
 }
 
 interface ProductsProps {
-  products: { products: ProductProps[]; limit: number };
+  products: ProductProps[];
+  limit: number;
 }
 
-export default function MainComponent({ products }: ProductsProps) {
+const MainComponent: FC = ({}) => {
+  const { data } = useQuery<ProductsProps>({
+    queryKey: ["productsList"],
+    queryFn: async () => {
+      const res = await axiosInstance.get("/products");
+      return res.data;
+    },
+  });
+
   const [searchInput, setSearchInput] = useState("");
   function handleSearch(search: string) {
     setSearchInput(search);
   }
+
+  const products = data?.products || [];
+  const limit = data?.limit || 0;
+
   return (
     <>
       <Header handleSearch={handleSearch} />
       {console.log(searchInput)}
-      <ProductsList products={products} searchInput={searchInput} />
+      <ProductsList
+        products={products}
+        searchInput={searchInput}
+        limit={limit}
+      />
     </>
   );
-}
+};
+
+export default MainComponent;
