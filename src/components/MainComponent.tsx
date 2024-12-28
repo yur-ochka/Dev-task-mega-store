@@ -2,8 +2,7 @@
 import ProductsList from "@/components/ProductsList";
 import Header from "@/components/header";
 import axiosInstance from "@/utils/axiosInstance";
-import { useQuery } from "@tanstack/react-query";
-import { useState, FC } from "react";
+import { useState, useEffect, FC } from "react";
 
 interface ProductProps {
   id: number;
@@ -18,36 +17,47 @@ interface ProductProps {
   stock: number;
 }
 
-interface ProductsProps {
-  products: ProductProps[];
-  limit: number;
-}
-
 const MainComponent: FC = ({}) => {
-  const { data } = useQuery<ProductsProps>({
-    queryKey: ["productsList"],
-    queryFn: async () => {
-      const res = await axiosInstance.get("/products");
-      return res.data;
-    },
-  });
-
   const [searchInput, setSearchInput] = useState("");
+  const [products, setProducts] = useState<ProductProps[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  async function* fetchProducts() {
+    let offset = 0;
+    const limit = 10;
+    while (true) {
+      const { data } = await axiosInstance.get(
+        `/products?limit=${limit}&skip=${offset}`
+      );
+      yield data.products;
+      offset += limit;
+      if (data.products.length < limit) break;
+    }
+  }
+
+  useEffect(() => {
+    async function loadAllProducts() {
+      for await (const chunk of fetchProducts()) {
+        setProducts((prev) => [...prev, ...chunk]);
+      }
+      setLoading(false);
+    }
+
+    loadAllProducts();
+  }, []);
+
   function handleSearch(search: string) {
     setSearchInput(search);
   }
 
-  const products = data?.products || [];
-  const limit = data?.limit || 0;
-
   return (
     <>
       <Header handleSearch={handleSearch} />
-      {console.log(searchInput)}
+      {/* {loading && <p>Loading products...</p>} */}
       <ProductsList
         products={products}
         searchInput={searchInput}
-        limit={limit}
+        limit={products.length}
       />
     </>
   );
