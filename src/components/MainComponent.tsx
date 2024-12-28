@@ -20,7 +20,7 @@ interface ProductProps {
 const MainComponent: FC = ({}) => {
   const [searchInput, setSearchInput] = useState("");
   const [products, setProducts] = useState<ProductProps[]>([]);
-  const [loading, setLoading] = useState(true);
+  //const [loading, setLoading] = useState(true);
 
   async function* fetchProducts() {
     let offset = 0;
@@ -40,7 +40,7 @@ const MainComponent: FC = ({}) => {
       for await (const chunk of fetchProducts()) {
         setProducts((prev) => [...prev, ...chunk]);
       }
-      setLoading(false);
+      //setLoading(false);
     }
 
     loadAllProducts();
